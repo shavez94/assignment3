@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 211125401262.dkr.ecr.us-east-1.amazonaws.com
+  build:
+    commands:
+      - echo Build started on `date`
+      - docker build -t azmi-ecr-repo .
+      - docker tag azmi-ecr-repo:latest 211125401262.dkr.ecr.us-east-1.amazonaws.com/azmi-ecr-repo:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker push 211125401262.dkr.ecr.us-east-1.amazonaws.com/azmi-ecr-repo:latest
+
+artifacts:
+  files: "**/*"
