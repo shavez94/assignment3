@@ -8,12 +8,17 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - echo Building the Docker image...
       - docker build -t azmi-ecr-repo .
       - docker tag azmi-ecr-repo:latest 211125401262.dkr.ecr.us-east-1.amazonaws.com/azmi-ecr-repo:latest
   post_build:
     commands:
       - echo Build completed on `date`
+      - echo Pushing the Docker image...
       - docker push 211125401262.dkr.ecr.us-east-1.amazonaws.com/azmi-ecr-repo:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"azmi-ecs-service","imageUri":"211125401262.dkr.ecr.us-east-1.amazonaws.com/azmi-ecr-repo:latest"}]' > imagedefinitions.json
 
 artifacts:
-  files: "**/*"
+  files:
+    - imagedefinitions.json
